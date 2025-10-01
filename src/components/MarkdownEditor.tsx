@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
+
 import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { basicSetup } from 'codemirror';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { oneDark } from '@codemirror/theme-one-dark';
+
 import { Download, Upload, Save, CloudDownload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
@@ -23,32 +26,39 @@ const SAMPLE_MARKDOWN = `# Welcome to Markdown Preview!
 console.log('Hello World!');
 \`\`\`
 
-![Image](https://via.placeholder.com/150)`;
+![Image](https://placehold.co/150x150/png)`;
 
 interface MarkdownEditorProps {}
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
   const [markdownText, setMarkdownText] = useState<string>('');
   const [html, setHtml] = useState<string>('');
-  const viewRef = useRef<EditorView | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showUploadDialog, setShowUploadDialog] = useState<boolean>(false);
+  const [pane, setPane] = useState<'editor' | 'preview'>('editor'); // mobile tabs
 
-  // Configure marked
+  const viewRef = useRef<EditorView | null>(null);
+
+  // Configure marked once
   marked.setOptions({
     breaks: true,
     gfm: true,
   });
 
+  // Generate safe HTML for preview
   useEffect(() => {
-    setHtml(markdownText ? marked.parse(markdownText) as string : '');
+    const raw = markdownText ? (marked.parse(markdownText) as string) : '';
+    const safe = DOMPurify.sanitize(raw, { USE_PROFILES: { html: true } });
+    setHtml(safe);
   }, [markdownText]);
 
+  // Load initial content
   useEffect(() => {
     const saved = localStorage.getItem('markdown-content');
     setMarkdownText(saved || SAMPLE_MARKDOWN);
   }, []);
 
+  // Persist to localStorage
   useEffect(() => {
     localStorage.setItem('markdown-content', markdownText);
   }, [markdownText]);
@@ -87,7 +97,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
     };
   }, []);
 
-  // Keep editor in sync if markdownText changes outside of editor (e.g., load/upload)
+  // Keep editor in sync if markdownText changes from outside editor
   useEffect(() => {
     const view = viewRef.current;
     if (!view) return;
@@ -133,7 +143,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
         body: JSON.stringify({ title: 'Markdown Note', body: markdownText, userId: 1 }),
         headers: { 'Content-type': 'application/json; charset=UTF-8' },
       });
-      alert('Saved to API! (Demo - check console)');
+      alert('Saved to API! (Demo)');
     } catch (error) {
       console.error(error);
       alert('Error saving to API');
@@ -161,9 +171,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
 
   return (
     <main className="container mx-auto p-4 max-w-7xl" role="main" aria-label="Markdown Editor">
-      <header className="flex justify-between items-center mb-6">
+      {/* Header / Toolbar */}
+      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur flex flex-wrap gap-2 justify-between items-center mb-4 py-2">
         <h1 className="text-3xl font-bold">Markdown Preview</h1>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
             <DialogTrigger asChild>
               <Button variant="outline" aria-label="Upload Markdown file">
@@ -192,19 +203,60 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[70vh]">
-        <section className="space-y-2" aria-labelledby="editor-heading">
-          <h2 id="editor-heading" className="text-xl font-semibold sr-only">Editor</h2>
-          <div id="editor" className="h-full border rounded-lg overflow-hidden" role="textbox" aria-multiline="true" />
+      {/* Mobile tabs */}
+      <div className="md:hidden mb-3 inline-flex gap-2" role="tablist" aria-label="Editor/Preview">
+        <Button
+          variant={pane === 'editor' ? 'default' : 'outline'}
+          role="tab"
+          aria-selected={pane === 'editor'}
+          onClick={() => setPane('editor')}
+        >
+          Editor
+        </Button>
+        <Button
+          variant={pane === 'preview' ? 'default' : 'outline'}
+          role="tab"
+          aria-selected={pane === 'preview'}
+          onClick={() => setPane('preview')}
+        >
+          Preview
+        </Button>
+      </div>
+
+      {/* Layout: stacked on mobile, split on desktop */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:h-[70vh]">
+        {/* Editor */}
+        <section
+          className={`${pane === 'editor' ? 'block' : 'hidden'} md:block space-y-2`}
+          aria-labelledby="editor-heading"
+        >
+          <h2 id="editor-heading" className="text-xl font-semibold sr-only">
+            Editor
+          </h2>
+          <div
+            id="editor"
+            className="h-[45vh] md:h-full border rounded-lg overflow-hidden"
+            role="textbox"
+            aria-multiline="true"
+          />
         </section>
 
-        <section className="space-y-2" aria-labelledby="preview-heading">
-          <h2 id="preview-heading" className="text-xl font-semibold">Preview</h2>
+        {/* Preview */}
+        <section
+          className={`${pane === 'preview' ? 'block' : 'hidden'} md:block space-y-2`}
+          aria-labelledby="preview-heading"
+        >
+          <h2 id="preview-heading" className="text-xl font-semibold">
+            Preview
+          </h2>
           <div
-            className="h-full border rounded-lg p-4 overflow-auto bg-white dark:bg-gray-900 prose prose-sm dark:prose-invert max-w-none"
+            className="min-h-[45vh] md:h-full border rounded-lg p-4 overflow-auto
+                       bg-white dark:bg-gray-900
+                       prose prose-slate dark:prose-invert max-w-none text-foreground"
             dangerouslySetInnerHTML={{ __html: html }}
             aria-label="Markdown preview"
             role="article"
+            aria-live="polite"
           />
           {isLoading && <div className="text-center">Loading...</div>}
         </section>

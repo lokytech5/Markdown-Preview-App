@@ -1,7 +1,9 @@
 /* Keep this at the top */
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 @source "./index.html";
 @source "./src/**/*.{js,jsx,ts,tsx}";
+
 
 /* Your existing variables */
 @layer base {

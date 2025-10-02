@@ -77,6 +77,45 @@
   --radius: var(--radius);
 }
 
+@layer utilities {
+  /* Full-contrast prose that respects your tokens */
+  .prose {
+    --tw-prose-body: hsl(var(--foreground));
+    --tw-prose-headings: hsl(var(--foreground));
+    --tw-prose-bold: hsl(var(--foreground));
+    --tw-prose-quotes: hsl(var(--foreground));
+    --tw-prose-counters: hsl(var(--foreground));
+    --tw-prose-bullets: hsl(var(--foreground));
+    --tw-prose-hr: hsl(var(--border));
+    --tw-prose-th-borders: hsl(var(--border));
+    --tw-prose-td-borders: hsl(var(--border));
+  }
+
+  /* Remove decorative backticks on inline code from Typography */
+  .prose code::before,
+  .prose code::after { content: none !important; }
+
+  /* Tasteful blockquote: left border + subtle bg */
+  .prose blockquote {
+    @apply not-italic border-l-4 pl-4 pr-3 py-2 rounded-r-lg;
+    background: color-mix(in oklab, hsl(var(--card-foreground)) 6%, transparent);
+    border-color: color-mix(in oklab, hsl(var(--card-foreground)) 24%, transparent);
+  }
+
+  /* Tables: zebra rows */
+  .prose table {
+    @apply w-full border-collapse overflow-hidden;
+  }
+  .prose thead th {
+    @apply bg-gray-100 dark:bg-gray-800 font-semibold;
+  }
+  .prose tbody tr:nth-child(odd) {
+    @apply bg-gray-50 dark:bg-gray-900/40;
+  }
+}
+
+
+
 /* Your base + markdown styles (unchanged) */
 @layer base {
   * { @apply border-border; }

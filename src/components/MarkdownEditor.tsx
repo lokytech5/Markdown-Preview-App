@@ -249,15 +249,44 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
           <h2 id="preview-heading" className="text-xl font-semibold">
             Preview
           </h2>
-          <div
-            className="min-h-[45vh] md:h-full border rounded-lg p-4 overflow-auto
-                       bg-white dark:bg-gray-900
-                       prose prose-slate dark:prose-invert max-w-none text-foreground"
-            dangerouslySetInnerHTML={{ __html: html }}
-            aria-label="Markdown preview"
-            role="article"
-            aria-live="polite"
-          />
+         <div
+    className="
+      min-h-[45vh] md:h-full overflow-auto
+      rounded-2xl border shadow-sm
+      bg-card text-card-foreground
+      p-5 md:p-6
+
+      /* Typography */
+      prose prose-base md:prose-lg max-w-none
+      prose-headings:font-semibold
+      prose-h1:mt-0 prose-h1:text-3xl md:prose-h1:text-4xl
+      prose-h2:mt-6 prose-h2:text-2xl md:prose-h2:text-3xl
+      prose-h3:mt-4
+      prose-p:my-3
+      prose-ul:my-3 prose-ol:my-3
+      prose-li:my-1
+      prose-hr:my-6
+
+      /* Links */
+      prose-a:underline prose-a:decoration-1
+      prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:opacity-90
+
+      /* Code */
+      prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+      prose-code:bg-gray-100 dark:prose-code:bg-gray-800/70
+      prose-code:text-inherit
+      prose-pre:bg-gray-950/90 dark:prose-pre:bg-gray-900/90
+      prose-pre:text-gray-100 prose-pre:rounded-xl prose-pre:p-4
+
+      /* Images & tables */
+      prose-img:rounded-xl prose-img:mx-auto
+      prose-table:rounded-lg prose-table:overflow-hidden
+    "
+    dangerouslySetInnerHTML={{ __html: html }}
+    aria-label="Markdown preview"
+    role="article"
+    aria-live="polite"
+  />
           {isLoading && <div className="text-center">Loading...</div>}
         </section>
       </div>

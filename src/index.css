@@ -1,11 +1,9 @@
-/* Keep this at the top */
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @source "./index.html";
 @source "./src/**/*.{js,jsx,ts,tsx}";
 
 
-/* Your existing variables */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -53,7 +51,6 @@
   }
 }
 
-/* Tell Tailwind the token names it can use in utilities */
 @theme {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
@@ -78,7 +75,6 @@
 }
 
 @layer utilities {
-  /* Full-contrast prose that respects your tokens */
   .prose {
     --tw-prose-body: hsl(var(--foreground));
     --tw-prose-headings: hsl(var(--foreground));
@@ -91,7 +87,6 @@
     --tw-prose-td-borders: hsl(var(--border));
   }
 
-  /* Remove decorative backticks on inline code from Typography */
   .prose code::before,
   .prose code::after { content: none !important; }
 
@@ -114,9 +109,6 @@
   }
 }
 
-
-
-/* Your base + markdown styles (unchanged) */
 @layer base {
   * { @apply border-border; }
   body { @apply bg-background text-foreground; }

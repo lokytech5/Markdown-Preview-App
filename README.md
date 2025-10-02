@@ -48,7 +48,7 @@ Markdown parsing uses `marked` with GitHub-flavored renderer for security.
 - Usage: Buttons trigger fetch/post.
 
 ## Screenshots
-- ![image](/src/assets/Screenshot1.png)
+  ![image](/src/assets/Screenshot1.png)
 
 ## Deployment Instructions
 - **Vercel**: Connect GitHub repo, deploy on push.

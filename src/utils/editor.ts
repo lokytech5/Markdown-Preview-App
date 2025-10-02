@@ -4,7 +4,7 @@ import { basicSetup } from "codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { oneDark } from "@codemirror/theme-one-dark";
 
-/** Create a CodeMirror view, returning the instance. Call `view.destroy()` when done. */
+/** Create a CodeMirror editor and wire change events to `onDocChange`. */
 export function createEditor(
   parent: HTMLElement,
   initialDoc: string,
@@ -13,9 +13,9 @@ export function createEditor(
   const state = EditorState.create({
     doc: initialDoc,
     extensions: [
-      basicSetup,
-      markdown({ base: markdownLanguage }),
-      oneDark,
+      basicSetup,                             // core keymaps, history, line nums, etc.
+      markdown({ base: markdownLanguage }),   // markdown syntax support
+      oneDark,                                // theme
       EditorView.updateListener.of((u) => {
         if (u.docChanged) onDocChange(u.state.doc.toString());
       }),
@@ -25,6 +25,7 @@ export function createEditor(
   return new EditorView({ state, parent });
 }
 
+/** If the editor content differs from `nextDoc`, replace it (keeps history sane). */
 export function syncEditor(view: EditorView, nextDoc: string) {
   const current = view.state.doc.toString();
   if (current !== nextDoc) {

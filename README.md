@@ -45,24 +45,11 @@ Markdown parsing uses `marked` with GitHub-flavored renderer for security.
 - **Endpoints**:
   - POST /posts: Save Markdown (body: { title: 'Note', body: markdownContent }).
   - GET /posts: Load saved content (simulate by fetching and displaying first post's body).
-- Usage: Buttons trigger fetch/post. Note: JSONPlaceholder is fake, so saves don't persist but simulate API calls.
+- Usage: Buttons trigger fetch/post.
 
-## Screenshots/GIFs
-- [Add screenshots here: Home page, preview, file upload, error page.]
-- GIF: [Real-time typing demo.]
-
-## Known Issues or Limitations
-- CodeMirror may need config tweaks for very large files.
-- API is demo-only; real API would need auth/error handling.
-- Image rendering in preview assumes external hosts (no local file support).
-
-## Future Improvements Planned
-- Full Monaco Editor integration.
-- Themes (dark/light).
-- Export to PDF.
-- Collaborative editing via WebSockets.
+## Screenshots
+- ![image](/src/assets/Screenshot1.png)
 
 ## Deployment Instructions
 - **Vercel**: Connect GitHub repo, deploy on push.
 - **Netlify**: Drag build folder or connect repo.
-- Ensure env vars if needed (none here). All features work in prod.

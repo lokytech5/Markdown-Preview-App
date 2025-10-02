@@ -1,3 +1,6 @@
+// API utils (demo): save/load markdown via JSONPlaceholder.
+
+/** POST markdown to the demo API. */
 export async function saveMarkdownAPI(body: string): Promise<void> {
   await fetch("https://jsonplaceholder.typicode.com/posts", {
     method: "POST",
@@ -6,6 +9,7 @@ export async function saveMarkdownAPI(body: string): Promise<void> {
   });
 }
 
+/** GET posts and return the first post's body (or empty string). */
 export async function loadMarkdownAPI(): Promise<string> {
   const res = await fetch("https://jsonplaceholder.typicode.com/posts");
   const posts: Array<{ body?: string }> = await res.json();

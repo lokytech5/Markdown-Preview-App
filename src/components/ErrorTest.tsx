@@ -1,11 +1,7 @@
-// ErrorTest: Simple component to trigger an error for testing ErrorBoundary.
-// Throws an error on render when accessed via /error-test.
-// Uses TypeScript for state.
-
 import { useState } from 'react';
 
 const ErrorTest: React.FC = () => {
-  const [shouldError, setShouldError] = useState<boolean>(true); // Force error
+  const [shouldError, setShouldError] = useState<boolean>(true);
 
   if (shouldError) {
     // This will trigger the ErrorBoundary

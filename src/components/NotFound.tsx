@@ -1,9 +1,5 @@
-// NotFound: Custom 404 page for undefined routes.
-// Includes link back to home for navigation.
-// Uses TypeScript for component.
-
 import { Link } from 'react-router-dom';
-import { AlertTriangle } from 'lucide-react'; // Icon
+import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button'; // ShadCN
 
 const NotFound: React.FC = () => {

@@ -1,4 +1,3 @@
-// App.tsx
 import { Routes, Route } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import MarkdownEditor from './components/MarkdownEditor';

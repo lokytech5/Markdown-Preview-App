@@ -3,7 +3,7 @@
 // Uses TypeScript for state and props typing.
 
 import React from 'react';
-import { AlertCircle } from 'lucide-react'; // Icon for error
+import { AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button'; // ShadCN Button
 
 // Define props for ErrorBoundary

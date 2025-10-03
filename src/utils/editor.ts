@@ -2,7 +2,29 @@ import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { basicSetup } from "codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
-import { oneDark } from "@codemirror/theme-one-dark";
+// import { oneDark } from "@codemirror/theme-one-dark";
+
+const lightTheme = EditorView.theme(
+  {
+    "&": { backgroundColor: "#ffffff", color: "#0f172a" }, // white bg, slate-900 text
+    ".cm-content": { caretColor: "#111827" },
+    ".cm-scroller": {
+      fontFamily:
+        'ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace',
+      lineHeight: "1.6",
+    },
+    ".cm-gutters": {
+      backgroundColor: "#ffffff",
+      color: "#64748b", // slate-500
+      border: "none",
+    },
+    ".cm-activeLine": { backgroundColor: "#f8fafc" }, // slate-50
+    "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection": {
+      backgroundColor: "#e2e8f0", // slate-200
+    },
+  },
+  { dark: false }
+);
 
 /** Create a CodeMirror editor and wire change events to `onDocChange`. */
 export function createEditor(
@@ -15,7 +37,7 @@ export function createEditor(
     extensions: [
       basicSetup,                             // core keymaps, history, line nums, etc.
       markdown({ base: markdownLanguage }),   // markdown syntax support
-      oneDark,                                // theme
+      lightTheme,                                // theme
       EditorView.updateListener.of((u) => {
         if (u.docChanged) onDocChange(u.state.doc.toString());
       }),

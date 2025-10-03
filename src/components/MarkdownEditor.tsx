@@ -7,6 +7,10 @@ import { Download, Upload, Save, CloudDownload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useMarkdownEditor } from "@/hooks/useMarkdownEditor";
+import {
+  Bold, Italic, Link as LinkIcon, Image as ImageIcon,
+  Quote, List, ListOrdered, Heading1, Heading2, Code, Braces
+} from "lucide-react";
 
 // Props: none for now, but defined for future extensibility.
 interface MarkdownEditorProps {}
@@ -25,6 +29,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
     handleDownload,
     handleSaveToAPI,
     handleLoadFromAPI,
+    cmd,
   } = useMarkdownEditor({
     // Initial sample shown on first load (used if localStorage is empty).
     initial: `# Welcome to Markdown Preview!
@@ -124,11 +129,27 @@ console.log('Hello World!');
             Editor
           </h2>
 
+          {/* ✨ Markdown toolbar (editor only) */}
+          <div className="flex flex-wrap items-center gap-1.5 rounded-lg border bg-card p-2">
+            <Button size="icon" variant="ghost" title="Bold"        aria-label="Bold"        onClick={cmd.bold}><Bold className="w-4 h-4" /></Button>
+            <Button size="icon" variant="ghost" title="Italic"      aria-label="Italic"      onClick={cmd.italic}><Italic className="w-4 h-4" /></Button>
+            <Button size="icon" variant="ghost" title="Inline code" aria-label="Inline code" onClick={cmd.code}><Code className="w-4 h-4" /></Button>
+            <span className="mx-1 text-muted-foreground">|</span>
+            <Button size="icon" variant="ghost" title="Heading 1" aria-label="Heading 1" onClick={cmd.h1}><Heading1 className="w-4 h-4" /></Button>
+            <Button size="icon" variant="ghost" title="Heading 2" aria-label="Heading 2" onClick={cmd.h2}><Heading2 className="w-4 h-4" /></Button>
+            <span className="mx-1 text-muted-foreground">|</span>
+            <Button size="icon" variant="ghost" title="Bulleted list" aria-label="Bulleted list" onClick={cmd.ul}><List className="w-4 h-4" /></Button>
+            <Button size="icon" variant="ghost" title="Numbered list" aria-label="Numbered list" onClick={cmd.ol}><ListOrdered className="w-4 h-4" /></Button>
+            <Button size="icon" variant="ghost" title="Quote"         aria-label="Quote"         onClick={cmd.quote}><Quote className="w-4 h-4" /></Button>
+            <Button size="icon" variant="ghost" title="Code block"    aria-label="Code block"    onClick={cmd.codeBlock}><Braces className="w-4 h-4" /></Button>
+            <span className="mx-1 text-muted-foreground">|</span>
+            <Button size="icon" variant="ghost" title="Link"  aria-label="Insert link"  onClick={cmd.link}><LinkIcon className="w-4 h-4" /></Button>
+            <Button size="icon" variant="ghost" title="Image" aria-label="Insert image" onClick={cmd.image}><ImageIcon className="w-4 h-4" /></Button>
+          </div>
+
           <div
             ref={editorRef}
             className="h-[45vh] md:h-full border rounded-lg overflow-hidden"
-            role="textbox"
-            aria-multiline="true"
           />
         </section>
 
@@ -148,7 +169,7 @@ console.log('Hello World!');
             dangerouslySetInnerHTML={{ __html: html }}
             aria-label="Markdown preview"
             role="article"
-            aria-live="polite"
+            
           />
 
           {/* Simple feedback while API calls are pending */}

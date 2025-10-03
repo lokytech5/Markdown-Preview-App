@@ -4,6 +4,7 @@ import { loadFromStorage, saveToStorage } from "@/utils/storage";
 import { readFileAsText, downloadText } from "@/utils/files";
 import { saveMarkdownAPI, loadMarkdownAPI } from "@/utils/api";
 import { createEditor, syncEditor } from "@/utils/editor";
+import { mdCommands } from "@/utils/editorCommands"; // ⬅️ NEW
 import type { EditorView } from "@codemirror/view";
 
 const DEFAULT_LS_KEY = "markdown-content";
@@ -20,10 +21,27 @@ export interface UseMarkdownEditor {
   isLoading: boolean;
   showUploadDialog: boolean;
   setShowUploadDialog: (v: boolean) => void;
+
+  // file/api
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDownload: () => void;
   handleSaveToAPI: () => Promise<void>;
   handleLoadFromAPI: () => Promise<void>;
+
+  // toolbar commands
+  cmd: {
+    bold: () => void;
+    italic: () => void;
+    code: () => void;
+    link: () => void;
+    image: () => void;
+    h1: () => void;
+    h2: () => void;
+    quote: () => void;
+    ul: () => void;
+    ol: () => void;
+    codeBlock: () => void;
+  };
 }
 
 export function useMarkdownEditor(
@@ -64,7 +82,7 @@ export function useMarkdownEditor(
       view.destroy();
       viewRef.current = null;
     };
-  }, [container, markdownText]);
+  }, [container]);
 
   // Sync editor when text changes from external sources
   useEffect(() => {
@@ -110,6 +128,26 @@ export function useMarkdownEditor(
     }
   };
 
+  /** Safely run a CodeMirror command */
+  const run = (fn: (v: EditorView) => void) => {
+    const v = viewRef.current;
+    if (v) fn(v);
+  };
+
+  const cmd = {
+    bold:      () => run(mdCommands.bold),
+    italic:    () => run(mdCommands.italic),
+    code:      () => run(mdCommands.code),
+    link:      () => run(mdCommands.link),
+    image:     () => run(mdCommands.image),
+    h1:        () => run(mdCommands.h1),
+    h2:        () => run(mdCommands.h2),
+    quote:     () => run(mdCommands.quote),
+    ul:        () => run(mdCommands.ul),
+    ol:        () => run(mdCommands.ol),
+    codeBlock: () => run(mdCommands.codeBlock),
+  };
+
   return {
     editorRef,
     markdownText,
@@ -121,5 +159,6 @@ export function useMarkdownEditor(
     handleDownload,
     handleSaveToAPI,
     handleLoadFromAPI,
+    cmd,
   };
 }

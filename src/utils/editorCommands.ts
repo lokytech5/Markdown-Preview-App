@@ -31,7 +31,6 @@ function prefixLines(view: EditorView, prefix: string) {
     const changes: { from: number; to: number; insert: string }[] = [];
 
     ranges.forEach((r) => {
-      // expand to full lines
       let fromLine = state.doc.lineAt(r.from);
       let toLine = state.doc.lineAt(r.to);
       for (let line = fromLine.number; line <= toLine.number; line++) {
@@ -79,14 +78,23 @@ function wrapCodeBlock(view: EditorView, lang = "") {
   });
 }
 
-/** Insert markdown link: [text](https://example.com) */
-function insertLink(view: EditorView) {
-  wrapSelection(view, "[", "](https://example.com)", "link text");
+function replaceSelection(view: EditorView, content: string) {
+  const tr = view.state.update({ changes: { from: view.state.selection.main.from, to: view.state.selection.main.to, insert: content } });
+  view.dispatch(tr);
+  view.focus();
 }
 
-/** Insert markdown image: ![alt](https://...) */
+
+function insertLink(view: EditorView) {
+  const text = view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to) || "link text";
+  const url = window.prompt("Enter URL", "https://") || "https://";
+  replaceSelection(view, `[${text}](${url})`);
+}
+
 function insertImage(view: EditorView) {
-  wrapSelection(view, "![", "](https://placehold.co/600x300/png)", "alt text");
+  const alt = window.prompt("Alt text (for accessibility)", "image description") || "image";
+  const url = window.prompt("Image URL", "https://") || "https://";
+  replaceSelection(view, `![${alt}](${url})`);
 }
 
 export const mdCommands = {

@@ -2,11 +2,10 @@ import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { basicSetup } from "codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
-// import { oneDark } from "@codemirror/theme-one-dark";
 
 const lightTheme = EditorView.theme(
   {
-    "&": { backgroundColor: "#ffffff", color: "#0f172a" }, // white bg, slate-900 text
+    "&": { backgroundColor: "#ffffff", color: "#0f172a" },
     ".cm-content": { caretColor: "#111827" },
     ".cm-scroller": {
       fontFamily:
@@ -15,12 +14,12 @@ const lightTheme = EditorView.theme(
     },
     ".cm-gutters": {
       backgroundColor: "#ffffff",
-      color: "#64748b", // slate-500
+      color: "#64748b",
       border: "none",
     },
-    ".cm-activeLine": { backgroundColor: "#f8fafc" }, // slate-50
+    ".cm-activeLine": { backgroundColor: "#f8fafc" }, 
     "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection": {
-      backgroundColor: "#e2e8f0", // slate-200
+      backgroundColor: "#e2e8f0",
     },
   },
   { dark: false }
@@ -47,7 +46,7 @@ export function createEditor(
   return new EditorView({ state, parent });
 }
 
-/** If the editor content differs from `nextDoc`, replace it (keeps history sane). */
+
 export function syncEditor(view: EditorView, nextDoc: string) {
   const current = view.state.doc.toString();
   if (current !== nextDoc) {
